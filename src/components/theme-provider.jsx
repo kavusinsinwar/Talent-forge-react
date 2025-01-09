@@ -2,8 +2,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const initialState = {
-  theme: "system",
-  setTheme: () => null,
+  theme: "system", // Default theme as 'system'
+  setTheme: () => null, // Placeholder for setTheme function
 };
 
 const ThemeProviderContext = createContext(initialState);
@@ -21,26 +21,26 @@ export function ThemeProvider({
   useEffect(() => {
     const root = window.document.documentElement;
 
+    // Remove any previously set classes for light/dark themes
     root.classList.remove("light", "dark");
 
+    // Apply the appropriate theme based on the current theme state
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
-
       root.classList.add(systemTheme);
-      return;
+    } else {
+      root.classList.add(theme); // either 'light' or 'dark'
     }
-
-    root.classList.add(theme);
   }, [theme]);
 
   const value = {
     theme,
-    setTheme: (theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
+    setTheme: (newTheme) => {
+      // Store the selected theme in localStorage and set it
+      localStorage.setItem(storageKey, newTheme);
+      setTheme(newTheme);
     },
   };
 

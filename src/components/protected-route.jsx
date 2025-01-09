@@ -6,18 +6,17 @@ const ProtectedRoute = ({ children }) => {
   const { isSignedIn, isLoaded, user } = useUser();
   const { pathname } = useLocation();
 
-  if (isLoaded && !isSignedIn && isSignedIn !== undefined) {
+  // Redirect to login if the user is not signed in
+  if (isLoaded && !isSignedIn) {
     return <Navigate to="/?sign-in=true" />;
   }
 
-  if (
-    user !== undefined &&
-    !user?.unsafeMetadata?.role &&
-    pathname !== "/onboarding"
-  )
+  // Redirect to onboarding if the user doesn't have a role and is not already on the onboarding page
+  if (user && !user?.unsafeMetadata?.role && pathname !== "/onboarding") {
     return <Navigate to="/onboarding" />;
+  }
 
-  return children;
+  return children; // Render the protected route content
 };
 
 export default ProtectedRoute;

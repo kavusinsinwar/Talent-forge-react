@@ -33,7 +33,7 @@ const JobCard = ({
     loading: loadingSavedJob,
     data: savedJob,
     fn: fnSavedJob,
-  } = useFetch(saveJob);
+  } = useFetch(saveJob,{alreadySaved:saved});
 
   const handleSaveJob = async () => {
     await fnSavedJob({
@@ -71,15 +71,26 @@ const JobCard = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 flex-1">
-        <div className="flex justify-between">
-          {job.company && <img src={job.company.logo_url} className="h-6" />}
-          <div className="flex gap-2 items-center">
-            <MapPinIcon size={15} /> {job.location}
-          </div>
-        </div>
-        <hr />
-        {job.description.substring(0, job.description.indexOf("."))}.
-      </CardContent>
+  <div className="flex justify-between">
+    {job.company && <img src={job.company.logo_url} className="h-6" />}
+    <div className="flex gap-2 items-center">
+      <MapPinIcon size={15} /> {job.location}
+    </div>
+  </div>
+  <hr />
+  {/* Check if description exists and truncate it */}
+  {job.description ? (
+    <span>
+      {job.description.includes(".")
+        ? job.description.substring(0, job.description.indexOf("."))
+        : job.description}
+      .
+    </span>
+  ) : (
+    <span>No description available</span> // Optional fallback text
+  )}
+</CardContent>
+
       <CardFooter className="flex gap-2">
         <Link to={`/job/${job.id}`} className="flex-1">
           <Button variant="secondary" className="w-full">

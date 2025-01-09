@@ -27,7 +27,6 @@ const JobListing = () => {
   const { isLoaded } = useUser();
 
   const {
-    // loading: loadingCompanies,
     data: companies,
     fn: fnCompanies,
   } = useFetch(getCompanies);
@@ -50,14 +49,16 @@ const JobListing = () => {
   }, [isLoaded]);
 
   useEffect(() => {
-    if (isLoaded) fnJobs();
+    if (isLoaded) {
+      console.log("Fetching jobs with filters:", { location, company_id, searchQuery });
+      fnJobs();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, location, company_id, searchQuery]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     let formData = new FormData(e.target);
-
     const query = formData.get("search-query");
     if (query) setSearchQuery(query);
   };
@@ -68,15 +69,20 @@ const JobListing = () => {
     setLocation("");
   };
 
+  // If not loaded, show loader
   if (!isLoaded) {
     return <BarLoader className="mb-4" width={"100%"} color="#36d7b7" />;
   }
 
+  // Log the jobs data to see if it's fetched properly
+  console.log("Fetched Jobs:", jobs);
+
   return (
-    <div className="">
+    <div>
       <h1 className="gradient-title font-extrabold text-6xl sm:text-7xl text-center pb-8">
         Latest Jobs
       </h1>
+
       <form
         onSubmit={handleSearch}
         className="h-14 flex flex-row w-full gap-2 items-center mb-3"
@@ -85,7 +91,7 @@ const JobListing = () => {
           type="text"
           placeholder="Search Jobs by Title.."
           name="search-query"
-          className="h-full flex-1  px-4 text-md"
+          className="h-full flex-1 px-4 text-md"
         />
         <Button type="submit" className="h-full sm:w-28" variant="blue">
           Search

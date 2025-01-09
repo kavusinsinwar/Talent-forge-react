@@ -5,7 +5,7 @@ export async function getJobs(token, { location, company_id, searchQuery }) {
   const supabase = await supabaseClient(token);
   let query = supabase
     .from("jobs")
-    .select("*, saved: saved_jobs(id), company: companies(name,logo_url)");
+.select("*, company:companies(name,logo_url), saved:saved_jobs!saved_jobs_job_id_fkey(id)");
 
   if (location) {
     query = query.eq("location", location);
@@ -29,12 +29,14 @@ export async function getJobs(token, { location, company_id, searchQuery }) {
   return data;
 }
 
-// Read Saved Jobs
+
 export async function getSavedJobs(token) {
   const supabase = await supabaseClient(token);
+  
+  // Explicitly use one of the relationships: 'saved_jobs_job_id_fkey' or 'saved_jobs_job_id_fkey1'
   const { data, error } = await supabase
     .from("saved_jobs")
-    .select("*, job: jobs(*, company: companies(name,logo_url))");
+    .select("*, job: jobs!saved_jobs_job_id_fkey(*, company: companies(name, logo_url))"); // Use the correct relationship
 
   if (error) {
     console.error("Error fetching Saved Jobs:", error);
@@ -43,6 +45,7 @@ export async function getSavedJobs(token) {
 
   return data;
 }
+
 
 // Read single job
 export async function getSingleJob(token, { job_id }) {
@@ -136,6 +139,18 @@ export async function getMyJobs(token, { recruiter_id }) {
 export async function deleteJob(token, { job_id }) {
   const supabase = await supabaseClient(token);
 
+  // First, delete the saved jobs related to the job_id
+  const { data: savedJobsData, error: deleteSavedJobsError } = await supabase
+    .from("saved_jobs")
+    .delete()
+    .eq("job_id", job_id);
+
+  if (deleteSavedJobsError) {
+    console.error("Error deleting saved jobs:", deleteSavedJobsError);
+    return savedJobsData;
+  }
+
+  // Now, delete the job from the jobs table
   const { data, error: deleteError } = await supabase
     .from("jobs")
     .delete()
@@ -149,6 +164,7 @@ export async function deleteJob(token, { job_id }) {
 
   return data;
 }
+
 
 // - post job
 export async function addNewJob(token, _, jobData) {
