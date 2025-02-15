@@ -1,4 +1,5 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react"; // Import Vercel Analytics
 
 import AppLayout from "./layouts/app-layout";
 import ProtectedRoute from "./components/protected-route";
@@ -18,10 +19,7 @@ const router = createBrowserRouter([
   {
     element: <AppLayout />,
     children: [
-      {
-        path: "/",
-        element: <LandingPage />,
-      },
+      { path: "/", element: <LandingPage /> },
       {
         path: "/onboarding",
         element: (
@@ -78,6 +76,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <RouterProvider router={router} />
+      <Analytics /> {/* Add Analytics component here */}
     </ThemeProvider>
   );
 }

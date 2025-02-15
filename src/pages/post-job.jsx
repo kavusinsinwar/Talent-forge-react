@@ -2,7 +2,6 @@ import { getCompanies } from "@/api/apiCompanies";
 import { addNewJob } from "@/api/apiJobs";
 import AddCompanyDrawer from "@/components/add-company-drawer";
 import { Button } from "@/components/ui/button";
-
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -63,7 +62,7 @@ const PostJob = () => {
 
   useEffect(() => {
     if (dataCreateJob?.length > 0) navigate("/jobs");
-  }, [loadingCreateJob]);
+  }, [dataCreateJob, navigate]);
 
   const {
     loading: loadingCompanies,
@@ -72,14 +71,11 @@ const PostJob = () => {
   } = useFetch(getCompanies);
 
   useEffect(() => {
-    if (isLoaded) {
-      fnCompanies();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isLoaded) fnCompanies();
   }, [isLoaded]);
 
   if (!isLoaded || loadingCompanies) {
-    return <BarLoader className="mb-4" width={"100%"} color="#36d7b7" />;
+    return <BarLoader className="mb-4 w-full" color="#36d7b7" />;
   }
 
   if (user?.unsafeMetadata?.role !== "recruiter") {
@@ -87,23 +83,18 @@ const PostJob = () => {
   }
 
   return (
-    <div>
-      <h1 className="gradient-title font-extrabold text-5xl sm:text-7xl text-center pb-8">
+    <div className="p-4 max-w-3xl mx-auto">
+      <h1 className="gradient-title font-extrabold text-4xl sm:text-5xl text-center pb-6">
         Post a Job
       </h1>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 p-4 pb-0"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <Input placeholder="Job Title" {...register("title")} />
-        {errors.title && <p className="text-red-500">{errors.title.message}</p>}
+        {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
 
         <Textarea placeholder="Job Description" {...register("description")} />
-        {errors.description && (
-          <p className="text-red-500">{errors.description.message}</p>
-        )}
+        {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
 
-        <div className="flex gap-4 items-center">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Controller
             name="location"
             control={control}
@@ -131,16 +122,13 @@ const PostJob = () => {
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Company">
-                    {field.value
-                      ? companies?.find((com) => com.id === Number(field.value))
-                          ?.name
-                      : "Company"}
+                    {companies?.find((com) => com.id === Number(field.value))?.name || "Company"}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     {companies?.map(({ name, id }) => (
-                      <SelectItem key={name} value={id}>
+                      <SelectItem key={id} value={id}>
                         {name}
                       </SelectItem>
                     ))}
@@ -151,12 +139,6 @@ const PostJob = () => {
           />
           <AddCompanyDrawer fetchCompanies={fnCompanies} />
         </div>
-        {errors.location && (
-          <p className="text-red-500">{errors.location.message}</p>
-        )}
-        {errors.company_id && (
-          <p className="text-red-500">{errors.company_id.message}</p>
-        )}
 
         <Controller
           name="requirements"
@@ -165,17 +147,12 @@ const PostJob = () => {
             <MDEditor value={field.value} onChange={field.onChange} />
           )}
         />
-        {errors.requirements && (
-          <p className="text-red-500">{errors.requirements.message}</p>
-        )}
-        {errors.errorCreateJob && (
-          <p className="text-red-500">{errors?.errorCreateJob?.message}</p>
-        )}
-        {errorCreateJob?.message && (
-          <p className="text-red-500">{errorCreateJob?.message}</p>
-        )}
-        {loadingCreateJob && <BarLoader width={"100%"} color="#36d7b7" />}
-        <Button type="submit" variant="blue" size="lg" className="mt-2">
+        {errors.requirements && <p className="text-red-500 text-sm">{errors.requirements.message}</p>}
+
+        {errorCreateJob?.message && <p className="text-red-500 text-sm">{errorCreateJob.message}</p>}
+        {loadingCreateJob && <BarLoader className="w-full" color="#36d7b7" />}
+
+        <Button type="submit" className="mt-2 w-full sm:w-auto">
           Submit
         </Button>
       </form>
