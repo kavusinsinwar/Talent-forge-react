@@ -25,14 +25,14 @@ const MyJobs = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
       {/* Left Sidebar (approx 225px - 3 cols on lg): Sticky Profile Summary Card */}
-      <div className="lg:col-span-3 sticky top-[72px]">
+      <div className="lg:col-span-3 lg:sticky lg:top-[72px]">
         <ProfileSummaryCard appliedCount={isCandidate ? "Tracked" : "Active"} />
       </div>
 
       {/* Center Feed (Main content - 6 cols on lg, 9 if no right sidebar) */}
       <div className="lg:col-span-6 space-y-4">
         {/* Page Header Card */}
-        <div className="bg-[var(--color-surface)] p-4 sm:p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card flex items-center justify-between">
+        <div className="bg-[var(--color-surface)] p-4 sm:p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h1 className="text-[18px] font-bold text-[var(--color-text)]">
               {isCandidate ? "My Job Applications" : "Manage Job Postings"}
@@ -45,8 +45,8 @@ const MyJobs = () => {
           </div>
 
           {!isCandidate && (
-            <Link to="/post-job">
-              <Button size="sm" className="gap-1 font-semibold">
+            <Link to="/post-job" className="w-full sm:w-auto">
+              <Button size="sm" className="gap-1 font-semibold w-full sm:w-auto">
                 <Plus className="w-3.5 h-3.5" />
                 Post Job
               </Button>

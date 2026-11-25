@@ -73,23 +73,23 @@ const Header = () => {
   return (
     <>
       {/* Top Navigation Bar: exactly 56px, max-width 1128px */}
-      <header className="sticky top-0 z-50 w-full h-14 bg-[var(--color-surface)] border-b border-[var(--color-border)] shadow-xs transition-colors">
-        <div className="max-w-[1128px] mx-auto px-4 h-full flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 w-full h-14 bg-[var(--color-surface)] border-b border-[var(--color-border)] shadow-xs transition-colors">
+        <div className="max-w-[1128px] mx-auto px-3 sm:px-4 h-full flex items-center justify-between gap-2 sm:gap-4">
           {/* Left: Brand + Search */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
             <Link to="/" className="flex-shrink-0" aria-label="TalentForge Home">
               <TalentForgeLogo size="small" />
             </Link>
 
             {/* Expandable Pill Search */}
-            <form onSubmit={handleNavSearch} className="relative hidden sm:block">
+            <form onSubmit={handleNavSearch} className="relative hidden sm:block flex-1 max-w-xs">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)] pointer-events-none" />
               <input
                 type="text"
                 value={navSearch}
                 onChange={(e) => setNavSearch(e.target.value)}
                 placeholder="Search jobs, skills, companies"
-                className="w-48 focus:w-64 pl-9 pr-3 py-1.5 text-[13px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] hover:bg-[var(--color-surface-alt)]/80 focus:bg-[var(--color-surface)] border border-transparent focus:border-[var(--color-primary)] outline-none transition-all duration-200 text-[var(--color-text)] placeholder:text-[var(--color-text-subtle)]"
+                className="w-full pl-9 pr-3 py-1.5 text-[13px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] hover:bg-[var(--color-surface-alt)]/80 focus:bg-[var(--color-surface)] border border-transparent focus:border-[var(--color-primary)] outline-none transition-all duration-200 text-[var(--color-text)] placeholder:text-[var(--color-text-subtle)]"
               />
             </form>
           </div>
@@ -171,10 +171,21 @@ const Header = () => {
           </nav>
 
           {/* Mobile Right Icons (Theme + Auth) */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-1.5 sm:gap-2 md:hidden flex-shrink-0">
+            <SignedIn>
+              {isRecruiter && (
+                <Link to="/post-job" aria-label="Post Job">
+                  <button className="h-7 px-2.5 text-[11px] font-semibold rounded-[var(--radius-pill)] bg-[var(--color-primary)] text-white flex items-center gap-1 shadow-xs">
+                    <Plus className="w-3 h-3" />
+                    <span>Post</span>
+                  </button>
+                </Link>
+              )}
+            </SignedIn>
+
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] rounded-[var(--radius-sm)]"
+              className="p-1.5 text-[var(--color-text-muted)] hover:text-[var(--color-text)] rounded-[var(--radius-sm)]"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -183,7 +194,7 @@ const Header = () => {
             <SignedOut>
               <button
                 onClick={() => setShowSignIn(true)}
-                className="h-7 px-3 text-xs font-semibold rounded-[var(--radius-pill)] border border-[var(--color-primary)] text-[var(--color-primary)]"
+                className="h-7 px-2.5 text-xs font-semibold rounded-[var(--radius-pill)] border border-[var(--color-primary)] text-[var(--color-primary)]"
               >
                 Sign In
               </button>
@@ -204,7 +215,7 @@ const Header = () => {
       </header>
 
       {/* Mobile Fixed Bottom Tab Bar (< 768px): 56px height, icons only */}
-      <nav className="fixed bottom-0 left-0 right-0 h-14 bg-[var(--color-surface)] border-t border-[var(--color-border)] z-50 flex items-center justify-around px-2 md:hidden shadow-raised">
+      <nav className="fixed bottom-0 left-0 right-0 h-14 bg-[var(--color-surface)] border-t border-[var(--color-border)] z-40 flex items-center justify-around px-1 md:hidden shadow-raised">
         {navItems.map((item) => {
           if (item.requireAuth && !user) return null;
           const Icon = item.icon;
@@ -214,15 +225,17 @@ const Header = () => {
             <Link
               key={item.href}
               to={item.href}
-              className={`flex flex-col items-center justify-center w-12 h-12 rounded-[var(--radius-md)] ${
+              className={`flex flex-col items-center justify-center flex-1 py-1 max-w-[72px] rounded-[var(--radius-sm)] transition-colors ${
                 isActive
                   ? "text-[var(--color-primary)] font-semibold"
-                  : "text-[var(--color-text-muted)]"
+                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
               }`}
               aria-label={item.label}
             >
               <Icon className="w-5 h-5" strokeWidth={isActive ? 2.2 : 1.8} />
-              <span className="text-[10px] mt-0.5">{item.label}</span>
+              <span className="text-[10px] mt-0.5 leading-none truncate max-w-full text-center">
+                {item.label}
+              </span>
             </Link>
           );
         })}

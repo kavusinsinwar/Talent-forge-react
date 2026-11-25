@@ -37,14 +37,14 @@ const SavedJobs = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
       {/* Left Sidebar */}
-      <div className="lg:col-span-3 sticky top-[72px]">
+      <div className="lg:col-span-3 lg:sticky lg:top-[72px]">
         <ProfileSummaryCard savedCount={savedJobs?.length || 0} />
       </div>
 
       {/* Main Center Content */}
       <div className="lg:col-span-6 space-y-4">
         {/* Header Card */}
-        <div className="bg-[var(--color-surface)] p-4 sm:p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card flex items-center justify-between">
+        <div className="bg-[var(--color-surface)] p-4 sm:p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card flex items-center justify-between gap-3">
           <div>
             <h1 className="text-[18px] font-bold text-[var(--color-text)]">
               Saved Jobs

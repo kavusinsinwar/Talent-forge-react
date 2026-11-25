@@ -150,7 +150,7 @@ const ChatBot = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-100px)] flex flex-col bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card overflow-hidden">
+    <div className="max-w-4xl mx-auto h-[calc(100dvh-130px)] md:h-[calc(100vh-100px)] flex flex-col bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card overflow-hidden">
       {/* Header */}
       <div className="px-5 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">

@@ -66,21 +66,21 @@ const ApplicationCard = ({ application, isCandidate = false }) => {
   return (
     <div className="bg-[var(--color-surface)] p-4 sm:p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card space-y-3.5 hover:shadow-raised transition-all">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">
         <div>
-          <h3 className="font-semibold text-[15px] text-[var(--color-text)]">
+          <h3 className="font-semibold text-[14px] sm:text-[15px] text-[var(--color-text)] leading-snug">
             {isCandidate
-              ? `${application?.job?.title} &bull; ${application?.job?.company?.name || "Verified Employer"}`
+              ? `${application?.job?.title} \u2022 ${application?.job?.company?.name || "Verified Employer"}`
               : application?.name}
           </h3>
-          <p className="text-[12px] text-[var(--color-text-subtle)] mt-0.5">
+          <p className="text-[11px] sm:text-[12px] text-[var(--color-text-subtle)] mt-0.5">
             Applied on {new Date(application?.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Status Badge: 28px tall pill */}
-          <span className={`inline-flex items-center gap-1.5 h-7 px-3 rounded-[var(--radius-pill)] text-[11px] font-semibold border ${badge.bg}`}>
+          <span className={`inline-flex items-center gap-1.5 h-7 px-2.5 sm:px-3 rounded-[var(--radius-pill)] text-[11px] font-semibold border ${badge.bg}`}>
             <BadgeIcon className="w-3.5 h-3.5" />
             {badge.label}
           </span>

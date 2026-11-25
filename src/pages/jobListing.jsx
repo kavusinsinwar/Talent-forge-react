@@ -186,23 +186,23 @@ const JobListing = () => {
     <div className="space-y-4">
       {/* 5.3 Filter Bar: White card surface, pill-shaped filter buttons */}
       <div className="bg-[var(--color-surface)] p-3 sm:p-4 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card space-y-3">
-        <form onSubmit={handleSearch} className="flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
-          <div className="relative flex-1">
+        <form onSubmit={handleSearch} className="flex flex-col gap-2.5">
+          <div className="relative w-full">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)] pointer-events-none" />
             <Input
               type="text"
               placeholder="Search by title, skill, or company"
               name="search-query"
               defaultValue={searchQuery}
-              className="pl-9 h-10 text-[14px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] focus:bg-[var(--color-surface)] border-transparent focus:border-[var(--color-primary)]"
+              className="pl-9 h-10 text-[14px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] focus:bg-[var(--color-surface)] border-transparent focus:border-[var(--color-primary)] w-full"
             />
           </div>
 
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+          <div className="grid grid-cols-2 sm:flex sm:flex-nowrap items-center gap-2 w-full">
             {/* Location Pill Selector */}
             <Select value={location || "all"} onValueChange={(val) => setLocation(val === "all" ? "" : val)}>
-              <SelectTrigger className="h-10 px-3.5 text-[13px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] border-transparent hover:border-[var(--color-border)] min-w-[130px]">
-                <MapPin className="w-3.5 h-3.5 mr-1.5 text-[var(--color-text-muted)] flex-shrink-0" />
+              <SelectTrigger className="h-10 px-3 text-[12px] sm:text-[13px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] border-transparent hover:border-[var(--color-border)] w-full sm:min-w-[130px]">
+                <MapPin className="w-3.5 h-3.5 mr-1 text-[var(--color-text-muted)] flex-shrink-0" />
                 <SelectValue placeholder="Location" />
               </SelectTrigger>
               <SelectContent>
@@ -219,8 +219,8 @@ const JobListing = () => {
 
             {/* Company Pill Selector */}
             <Select value={company_id || "all"} onValueChange={(val) => setCompany_id(val === "all" ? "" : val)}>
-              <SelectTrigger className="h-10 px-3.5 text-[13px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] border-transparent hover:border-[var(--color-border)] min-w-[130px]">
-                <Building2 className="w-3.5 h-3.5 mr-1.5 text-[var(--color-text-muted)] flex-shrink-0" />
+              <SelectTrigger className="h-10 px-3 text-[12px] sm:text-[13px] rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] border-transparent hover:border-[var(--color-border)] w-full sm:min-w-[130px]">
+                <Building2 className="w-3.5 h-3.5 mr-1 text-[var(--color-text-muted)] flex-shrink-0" />
                 <SelectValue placeholder="Company" />
               </SelectTrigger>
               <SelectContent>
@@ -235,7 +235,7 @@ const JobListing = () => {
               </SelectContent>
             </Select>
 
-            <Button type="submit" className="h-10 px-5 text-[13px] rounded-[var(--radius-pill)]">
+            <Button type="submit" className="col-span-2 sm:col-span-1 h-10 px-5 text-[13px] rounded-[var(--radius-pill)] w-full sm:w-auto">
               Find Jobs
             </Button>
 
@@ -243,7 +243,7 @@ const JobListing = () => {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="h-10 px-3 text-[12px] font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-danger)] flex items-center gap-1 rounded-[var(--radius-pill)] hover:bg-[var(--color-surface-alt)] transition-colors flex-shrink-0"
+                className="col-span-2 sm:col-span-1 h-9 px-3 text-[12px] font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-danger)] flex items-center justify-center gap-1 rounded-[var(--radius-pill)] hover:bg-[var(--color-surface-alt)] transition-colors w-full sm:w-auto"
               >
                 <X className="w-3.5 h-3.5" />
                 Reset

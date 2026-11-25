@@ -160,10 +160,10 @@ const JobPage = () => {
       {/* Main Job Details Card */}
       <div className="bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card overflow-hidden">
         {/* Header Block */}
-        <div className="p-5 sm:p-6 border-b border-[var(--color-border)] space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-2 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-xs">
+        <div className="p-4 sm:p-6 border-b border-[var(--color-border)] space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] p-1.5 sm:p-2 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-xs">
                 {job?.company?.logo_url ? (
                   <img
                     src={job.company.logo_url}
@@ -171,17 +171,17 @@ const JobPage = () => {
                     className="w-full h-full object-contain"
                   />
                 ) : (
-                  <Building2 className="w-8 h-8 text-[var(--color-text-muted)]" />
+                  <Building2 className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--color-text-muted)]" />
                 )}
               </div>
               <div>
-                <h1 className="text-[20px] sm:text-[24px] font-bold text-[var(--color-text)] leading-snug">
+                <h1 className="text-[18px] sm:text-[24px] font-bold text-[var(--color-text)] leading-snug">
                   {job?.title}
                 </h1>
-                <p className="text-[14px] font-medium text-[var(--color-primary)] hover:underline cursor-pointer">
+                <p className="text-[13px] sm:text-[14px] font-medium text-[var(--color-primary)] hover:underline cursor-pointer">
                   {job?.company?.name || "Verified Employer"}
                 </p>
-                <div className="flex flex-wrap items-center gap-3 text-[12px] text-[var(--color-text-subtle)] mt-1">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-[12px] text-[var(--color-text-subtle)] mt-1">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5" />
                     {job?.location || "Remote"}
@@ -217,7 +217,7 @@ const JobPage = () => {
 
           {/* Action Row */}
           {!isRecruiterOwner && (
-            <div className="flex flex-wrap items-center gap-2.5 pt-1">
+            <div className="flex flex-wrap items-center gap-2 pt-1">
               <ApplyJobDrawer
                 job={job}
                 user={user}
@@ -226,14 +226,14 @@ const JobPage = () => {
               />
               <button
                 onClick={handleRunAiFit}
-                className="h-9 px-3.5 rounded-[var(--radius-pill)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] text-[var(--color-text)] hover:text-[var(--color-primary)] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
+                className="flex-1 sm:flex-initial h-9 px-3 rounded-[var(--radius-pill)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)] text-[var(--color-text)] hover:text-[var(--color-primary)] text-[12px] font-semibold transition-colors flex items-center justify-center gap-1.5"
               >
                 <Sparkles className="w-3.5 h-3.5 text-[var(--color-primary)]" />
                 AI Fit Score
               </button>
               <button
                 onClick={handleGenerateInterviewPrep}
-                className="h-9 px-3.5 rounded-[var(--radius-pill)] border border-[var(--color-border)] hover:bg-[var(--color-surface-alt)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-[12px] font-semibold transition-colors flex items-center gap-1.5"
+                className="flex-1 sm:flex-initial h-9 px-3 rounded-[var(--radius-pill)] border border-[var(--color-border)] hover:bg-[var(--color-surface-alt)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] text-[12px] font-semibold transition-colors flex items-center justify-center gap-1.5"
               >
                 <HelpCircle className="w-3.5 h-3.5" />
                 Interview Q&A
@@ -242,10 +242,10 @@ const JobPage = () => {
           )}
 
           {/* Sub Navigation Tabs */}
-          <div className="flex gap-6 border-t border-[var(--color-border)] pt-2.5 text-[13px] font-semibold">
+          <div className="flex gap-4 sm:gap-6 border-t border-[var(--color-border)] pt-2.5 text-[12px] sm:text-[13px] font-semibold overflow-x-auto no-scrollbar flex-nowrap">
             <button
               onClick={() => setActiveTab("overview")}
-              className={`pb-1 transition-colors relative ${
+              className={`pb-1 transition-colors relative flex-shrink-0 ${
                 activeTab === "overview"
                   ? "text-[var(--color-primary)] after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[var(--color-primary)]"
                   : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
@@ -255,7 +255,7 @@ const JobPage = () => {
             </button>
             <button
               onClick={handleRunAiFit}
-              className={`pb-1 transition-colors relative flex items-center gap-1 ${
+              className={`pb-1 transition-colors relative flex items-center gap-1 flex-shrink-0 ${
                 activeTab === "ai-fit"
                   ? "text-[var(--color-primary)] after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[var(--color-primary)]"
                   : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
@@ -266,7 +266,7 @@ const JobPage = () => {
             </button>
             <button
               onClick={handleGenerateInterviewPrep}
-              className={`pb-1 transition-colors relative flex items-center gap-1 ${
+              className={`pb-1 transition-colors relative flex items-center gap-1 flex-shrink-0 ${
                 activeTab === "interview-prep"
                   ? "text-[var(--color-primary)] after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[var(--color-primary)]"
                   : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"

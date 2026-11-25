@@ -89,21 +89,21 @@ const PostJob = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-5">
       {/* Header Card */}
-      <div className="bg-[var(--color-surface)] p-5 sm:p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card">
+      <div className="bg-[var(--color-surface)] p-4 sm:p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[var(--radius-pill)] text-[11px] font-semibold bg-[var(--color-primary-soft)] text-[var(--color-primary)] mb-2">
           <Briefcase className="w-3.5 h-3.5" />
           Recruiter Hub
         </div>
-        <h1 className="text-[20px] font-bold text-[var(--color-text)]">
+        <h1 className="text-[18px] sm:text-[20px] font-bold text-[var(--color-text)]">
           Post an Engineering Role
         </h1>
-        <p className="text-[13px] text-[var(--color-text-muted)] mt-0.5">
+        <p className="text-[12px] sm:text-[13px] text-[var(--color-text-muted)] mt-0.5">
           Reach qualified developers and manage candidates directly in your pipeline.
         </p>
       </div>
 
       {/* Form Card */}
-      <div className="bg-[var(--color-surface)] p-5 sm:p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card">
+      <div className="bg-[var(--color-surface)] p-4 sm:p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Job Title */}
           <div className="space-y-1">
