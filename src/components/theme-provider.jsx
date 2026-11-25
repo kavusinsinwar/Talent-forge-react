@@ -2,21 +2,33 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const initialState = {
-  theme: "system", // Default theme as 'system'
-  setTheme: () => null, // Placeholder for setTheme function
+  theme: "light",
+  setTheme: () => null,
 };
 
 const ThemeProviderContext = createContext(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
-  storageKey = "vite-ui-theme",
+  defaultTheme = "light",
+  storageKey = "tf-ui-theme",
   ...props
 }) {
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem(storageKey) || defaultTheme
-  );
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved === "light" || saved === "dark") {
+        return saved;
+      }
+      // Clean up old legacy dark mode flag from previous versions
+      if (localStorage.getItem("vite-ui-theme")) {
+        localStorage.removeItem("vite-ui-theme");
+      }
+    } catch {
+      // ignore storage access errors
+    }
+    return defaultTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -24,22 +36,25 @@ export function ThemeProvider({
     // Remove any previously set classes for light/dark themes
     root.classList.remove("light", "dark");
 
-    // Apply the appropriate theme based on the current theme state
+    // Apply the appropriate theme based on current state
     if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
       root.classList.add(systemTheme);
     } else {
-      root.classList.add(theme); // either 'light' or 'dark'
+      root.classList.add(theme); // 'light' or 'dark'
     }
   }, [theme]);
 
   const value = {
     theme,
     setTheme: (newTheme) => {
-      // Store the selected theme in localStorage and set it
-      localStorage.setItem(storageKey, newTheme);
+      try {
+        localStorage.setItem(storageKey, newTheme);
+      } catch {
+        // ignore storage errors
+      }
       setTheme(newTheme);
     },
   };

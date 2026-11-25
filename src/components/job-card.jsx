@@ -1,49 +1,45 @@
 /* eslint-disable react/prop-types */
-import { Heart, MapPinIcon, Trash2Icon } from "lucide-react";
-import { Button } from "./ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+import React, { useEffect, useState } from "react";
+import { Heart, MapPin, Trash2, Building2, Zap, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import useFetch from "@/hooks/use-fetch";
 import { deleteJob, saveJob } from "@/api/apiJobs";
 import { useUser } from "@clerk/clerk-react";
-import { useEffect, useState } from "react";
-import { BarLoader } from "react-spinners";
 
 const JobCard = ({
   job,
   savedInit = false,
   onJobAction = () => {},
   isMyJob = false,
+  isSelected = false,
+  onSelect = null,
 }) => {
   const [saved, setSaved] = useState(savedInit);
-
   const { user } = useUser();
 
   const { loading: loadingDeleteJob, fn: fnDeleteJob } = useFetch(deleteJob, {
-    job_id: job.id,
+    job_id: job?.id,
   });
 
   const {
     loading: loadingSavedJob,
     data: savedJob,
     fn: fnSavedJob,
-  } = useFetch(saveJob,{alreadySaved:saved});
+  } = useFetch(saveJob, { alreadySaved: saved });
 
-  const handleSaveJob = async () => {
+  const handleSaveJob = async (e) => {
+    e.stopPropagation();
+    if (!user) return;
     await fnSavedJob({
       user_id: user.id,
-      job_id: job.id,
+      job_id: job?.id,
     });
+    setSaved(!saved);
     onJobAction();
   };
 
-  const handleDeleteJob = async () => {
+  const handleDeleteJob = async (e) => {
+    e.stopPropagation();
     await fnDeleteJob();
     onJobAction();
   };
@@ -52,67 +48,108 @@ const JobCard = ({
     if (savedJob !== undefined) setSaved(savedJob?.length > 0);
   }, [savedJob]);
 
-  return (
-    <Card className="flex flex-col">
-      {loadingDeleteJob && (
-        <BarLoader className="mt-4" width={"full"} color="#36d7b7" />
-      )}
-      <CardHeader className="flex">
-        <CardTitle className="flex justify-between font-bold">
-          {job.title}
-          {isMyJob && (
-            <Trash2Icon
-              fill="red"
-              size={18}
-              className="text-red-300 cursor-pointer"
-              onClick={handleDeleteJob}
-            />
-          )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4 flex-1">
-  <div className="flex justify-between">
-    {job.company && <img src={job.company.logo_url} className="h-6" />}
-    <div className="flex gap-2 items-center">
-      <MapPinIcon size={15} /> {job.location}
-    </div>
-  </div>
-  <hr />
-  {/* Check if description exists and truncate it */}
-  {job.description ? (
-    <span>
-      {job.description.includes(".")
-        ? job.description.substring(0, job.description.indexOf("."))
-        : job.description}
-      .
-    </span>
-  ) : (
-    <span>No description available</span> // Optional fallback text
-  )}
-</CardContent>
+  const snippet = job?.description
+    ? job.description.replace(/[#*`_]/g, "").slice(0, 120) + "..."
+    : "No job description provided.";
 
-      <CardFooter className="flex gap-2">
-        <Link to={`/job/${job.id}`} className="flex-1">
-          <Button variant="secondary" className="w-full">
-            More Details
-          </Button>
-        </Link>
-        {!isMyJob && (
-          <Button
-            variant="outline"
-            className="w-15"
-            onClick={handleSaveJob}
-            disabled={loadingSavedJob}
-          >
-            {saved ? (
-              <Heart size={20} fill="red" stroke="red" />
+  return (
+    <div
+      onClick={onSelect ? () => onSelect(job) : undefined}
+      className={`group relative p-4 rounded-[var(--radius-md)] border transition-all duration-150 cursor-pointer bg-[var(--color-surface)] shadow-card flex flex-col justify-between min-h-[148px] ${
+        isSelected
+          ? "border-[var(--color-primary)] bg-[var(--color-primary-soft)]/40 ring-1 ring-[var(--color-primary)]"
+          : "border-[var(--color-border)] hover:bg-[var(--color-surface-alt)] hover:shadow-raised hover:-translate-y-[1px]"
+      }`}
+    >
+      {/* Top Header Row */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="w-12 h-12 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-surface)] p-1 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-xs">
+            {job?.company?.logo_url ? (
+              <img
+                src={job.company.logo_url}
+                alt={job?.company?.name || "Company"}
+                className="w-full h-full object-contain"
+              />
             ) : (
-              <Heart size={20} />
+              <Building2 className="w-6 h-6 text-[var(--color-text-muted)]" />
             )}
-          </Button>
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h3 className="font-semibold text-[15px] text-[var(--color-text)] group-hover:text-[var(--color-primary)] transition-colors truncate leading-snug">
+              {job?.title}
+            </h3>
+            <p className="text-[13px] text-[var(--color-text-muted)] truncate font-medium">
+              {job?.company?.name || "Verified Employer"}
+            </p>
+            <div className="flex items-center gap-1.5 text-[12px] text-[var(--color-text-subtle)] mt-0.5">
+              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{job?.location || "Remote"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action button */}
+        <div className="flex items-center flex-shrink-0 self-start">
+          {isMyJob ? (
+            <button
+              onClick={handleDeleteJob}
+              className="w-8 h-8 flex items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-muted)] hover:text-[var(--color-danger)] hover:bg-[var(--color-surface-alt)] transition-colors"
+              title="Delete Listing"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              onClick={handleSaveJob}
+              disabled={loadingSavedJob}
+              className={`w-8 h-8 flex items-center justify-center rounded-[var(--radius-sm)] transition-colors hover:bg-[var(--color-surface-alt)] ${
+                saved
+                  ? "text-[var(--color-danger)]"
+                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+              }`}
+              title={saved ? "Saved" : "Save job"}
+            >
+              <Heart
+                className="w-4 h-4"
+                fill={saved ? "currentColor" : "none"}
+              />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Description Snippet (Strictly clamped 2-line height for even alignment across cards) */}
+      <p className="text-[13px] text-[var(--color-text-muted)] line-clamp-2 mt-2 leading-relaxed h-[38px] overflow-hidden">
+        {snippet}
+      </p>
+
+      {/* Badges Footer Row */}
+      <div className="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-[var(--color-border)] text-[11px] h-7">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1 h-5 px-2 rounded-[var(--radius-pill)] bg-[var(--color-primary-soft)] text-[var(--color-primary)] font-semibold text-[11px]">
+            <Zap className="w-3 h-3" />
+            Easy Apply
+          </span>
+          <span className="text-[var(--color-text-subtle)] flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {job?.isOpen ? "Actively Hiring" : "Closed"}
+          </span>
+        </div>
+
+        {!onSelect && (
+          <Link
+            to={`/job/${job?.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="text-[var(--color-primary)] font-semibold hover:underline text-[12px] flex items-center gap-1"
+          >
+            <span>Details</span>
+            <span>&rarr;</span>
+          </Link>
         )}
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 

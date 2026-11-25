@@ -19,6 +19,7 @@ import * as z from "zod";
 import useFetch from "@/hooks/use-fetch";
 import { applyToJob } from "@/api/apiApplication";
 import { BarLoader } from "react-spinners";
+import { Zap, CheckCircle2, FileUp } from "lucide-react";
 
 const schema = z.object({
   experience: z
@@ -27,7 +28,7 @@ const schema = z.object({
     .int(),
   skills: z.string().min(1, { message: "Skills are required" }),
   education: z.enum(["Intermediate", "Graduate", "Post Graduate"], {
-    message: "Education is required",
+    message: "Please select your education level",
   }),
   resume: z
     .any()
@@ -35,7 +36,8 @@ const schema = z.object({
       (file) =>
         file[0] &&
         (file[0].type === "application/pdf" ||
-          file[0].type === "application/msword"),
+          file[0].type === "application/msword" ||
+          file[0].type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
       { message: "Only PDF or Word documents are allowed" }
     ),
 });
@@ -75,89 +77,141 @@ export function ApplyJobDrawer({ user, job, fetchJob, applied = false }) {
     <Drawer open={applied ? false : undefined}>
       <DrawerTrigger asChild>
         <Button
-          size="lg"
-          variant={job?.isOpen && !applied ? "blue" : "destructive"}
+          size="default"
+          className={
+            applied
+              ? "bg-[var(--color-primary-soft)] text-[var(--color-accent)] border border-[var(--color-accent)]/30 cursor-default"
+              : job?.isOpen
+              ? "bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold rounded-[var(--radius-pill)] shadow-xs gap-1.5"
+              : "bg-[var(--color-surface-alt)] text-[var(--color-text-muted)] cursor-not-allowed"
+          }
           disabled={!job?.isOpen || applied}
         >
-          {job?.isOpen ? (applied ? "Applied" : "Apply") : "Hiring Closed"}
+          {applied ? (
+            <>
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              Applied
+            </>
+          ) : job?.isOpen ? (
+            <>
+              <Zap className="w-4 h-4" />
+              Easy Apply
+            </>
+          ) : (
+            "Hiring Closed"
+          )}
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>
-            Apply for {job?.title} at {job?.company?.name}
+      <DrawerContent className="max-w-2xl mx-auto rounded-t-3xl border-t border-border bg-card">
+        <DrawerHeader className="text-left pb-2">
+          <DrawerTitle className="text-xl font-bold text-foreground">
+            Apply to {job?.title}
           </DrawerTitle>
-          <DrawerDescription>Please Fill the form below</DrawerDescription>
+          <DrawerDescription className="text-xs text-muted-foreground">
+            {job?.company?.name} &bull; {job?.location} &bull; Easy Apply takes less than 1 minute
+          </DrawerDescription>
         </DrawerHeader>
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-4 p-4 pb-0"
+          className="flex flex-col gap-4 p-4 pt-1"
         >
-          <Input
-            type="number"
-            placeholder="Years of Experience"
-            className="flex-1"
-            {...register("experience", {
-              valueAsNumber: true,
-            })}
-          />
-          {errors.experience && (
-            <p className="text-red-500">{errors.experience.message}</p>
-          )}
-          <Input
-            type="text"
-            placeholder="Skills (Comma Separated)"
-            className="flex-1"
-            {...register("skills")}
-          />
-          {errors.skills && (
-            <p className="text-red-500">{errors.skills.message}</p>
-          )}
-          <Controller
-            name="education"
-            control={control}
-            render={({ field }) => (
-              <RadioGroup onValueChange={field.onChange} {...field}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Intermediate" id="intermediate" />
-                  <Label htmlFor="intermediate">Intermediate</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Graduate" id="graduate" />
-                  <Label htmlFor="graduate">Graduate</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Post Graduate" id="post-graduate" />
-                  <Label htmlFor="post-graduate">Post Graduate</Label>
-                </div>
-              </RadioGroup>
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold">Total Years of Experience</Label>
+            <Input
+              type="number"
+              placeholder="e.g. 3"
+              className="bg-background h-10"
+              {...register("experience", {
+                valueAsNumber: true,
+              })}
+            />
+            {errors.experience && (
+              <p className="text-red-500 text-xs">{errors.experience.message}</p>
             )}
-          />
-          {errors.education && (
-            <p className="text-red-500">{errors.education.message}</p>
-          )}
-          <Input
-            type="file"
-            accept=".pdf, .doc, .docx"
-            className="flex-1 file:text-gray-500"
-            {...register("resume")}
-          />
-          {errors.resume && (
-            <p className="text-red-500">{errors.resume.message}</p>
-          )}
+          </div>
+
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold">Key Skills (Comma Separated)</Label>
+            <Input
+              type="text"
+              placeholder="e.g. React, TypeScript, Node.js, Next.js, PostgreSQL"
+              className="bg-background h-10"
+              {...register("skills")}
+            />
+            {errors.skills && (
+              <p className="text-red-500 text-xs">{errors.skills.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-xs font-semibold">Highest Education Level</Label>
+            <Controller
+              name="education"
+              control={control}
+              render={({ field }) => (
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-wrap gap-4 text-xs pt-1"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="Intermediate" id="intermediate" />
+                    <Label htmlFor="intermediate" className="cursor-pointer">Intermediate / High School</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="Graduate" id="graduate" />
+                    <Label htmlFor="graduate" className="cursor-pointer">Graduate (Bachelors)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="Post Graduate" id="post-graduate" />
+                    <Label htmlFor="post-graduate" className="cursor-pointer">Post Graduate (Masters/PhD)</Label>
+                  </div>
+                </RadioGroup>
+              )}
+            />
+            {errors.education && (
+              <p className="text-red-500 text-xs">{errors.education.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-1">
+            <Label className="text-xs font-semibold flex items-center gap-1.5">
+              <FileUp className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+              Upload CV / Resume (PDF or Word)
+            </Label>
+            <Input
+              type="file"
+              accept=".pdf, .doc, .docx"
+              className="bg-background file:text-foreground file:font-semibold"
+              {...register("resume")}
+            />
+            {errors.resume && (
+              <p className="text-red-500 text-xs">{errors.resume.message}</p>
+            )}
+          </div>
+
           {errorApply?.message && (
-            <p className="text-red-500">{errorApply?.message}</p>
+            <p className="text-red-500 text-xs">{errorApply?.message}</p>
           )}
-          {loadingApply && <BarLoader width={"100%"} color="#36d7b7" />}
-          <Button type="submit" variant="blue" size="lg">
-            Apply
+
+          {loadingApply && <BarLoader width={"100%"} color="#0a66c2" />}
+
+          <Button
+            type="submit"
+            disabled={loadingApply}
+            className="w-full h-10 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold rounded-[var(--radius-pill)] mt-2 gap-2"
+          >
+            <Zap className="w-4 h-4" />
+            Submit Application
           </Button>
         </form>
 
-        <DrawerFooter>
+        <DrawerFooter className="pt-0">
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" size="sm">
+              Cancel
+            </Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>

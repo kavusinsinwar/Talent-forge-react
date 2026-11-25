@@ -1,17 +1,17 @@
+import React from "react";
 import Header from "@/components/header";
 import { Outlet } from "react-router-dom";
 
 const AppLayout = () => {
   return (
-    <div>
-      <div className="grid-background"></div>
-      <main className="min-h-screen container">
-        <Header />
+    <div className="min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-text)] transition-colors">
+      {/* Sticky Top Navigation (56px) */}
+      <Header />
+
+      {/* Main Page Canvas (Max 1128px container) */}
+      <main className="flex-1 w-full max-w-[1128px] mx-auto px-4 py-4 pb-20 md:pb-6">
         <Outlet />
       </main>
-      <div className="p-10 text-center bg-gray-800 mt-10">
-        Made with 💗 by Kavya
-      </div>
     </div>
   );
 };

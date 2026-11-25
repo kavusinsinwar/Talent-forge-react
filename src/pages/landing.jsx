@@ -1,195 +1,256 @@
-"use client"
-
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
-import Autoplay from "embla-carousel-autoplay"
-import companies from "../data/companies.json"
-import faqs from "../data/faq.json"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Link } from "react-router-dom"
-import { colors } from "../styles/color"
-import { Sparkles, ArrowRight } from "lucide-react"
-import { TalentForgeLogo } from "../components/talent-forge-logo"
-import { BarLoader } from "react-spinners"
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 },
-}
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import companies from "../data/companies.json";
+import faqs from "../data/faq.json";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Sparkles,
+  ArrowRight,
+  Search,
+  Briefcase,
+  Zap,
+  Building2,
+  BarChart3,
+  Bot,
+  ShieldCheck,
+  CheckCircle,
+} from "lucide-react";
 
 const LandingPage = () => {
+  const [heroSearch, setHeroSearch] = useState("");
+  const navigate = useNavigate();
+
+  const handleHeroSearch = (e) => {
+    e.preventDefault();
+    if (heroSearch.trim()) {
+      navigate(`/jobs?search=${encodeURIComponent(heroSearch.trim())}`);
+    } else {
+      navigate("/jobs");
+    }
+  };
+
   return (
-    
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800-tr relative overflow-hidden">
-      
-      {/* Enhanced Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-repeat opacity-10" />
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-radial from-[#51e2g5]/10 via-transparent to-transparent blur-xl" />
-        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-radial from-[#ffa8b6]/5 via-transparent to-transparent blur-xl" />
-      </div>
+    <div className="space-y-8 sm:space-y-12">
+      {/* Hero Card: White surface on gray canvas */}
+      <section className="w-full bg-[var(--color-surface)] p-6 sm:p-10 lg:p-14 rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-card text-center space-y-6">
+        {/* Soft Badge */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[var(--radius-pill)] text-xs font-semibold bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>TalentForge Pro &bull; Professional Career Platform</span>
+        </div>
 
-      <main className="relative z-10 flex flex-col gap-8 sm:gap-16 lg:gap-24 py-6 sm:py-12 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        {/* Hero Section */}
-        <motion.section
-          className="text-center space-y-4 sm:space-y-6 lg:space-y-8 pt-4 sm:pt-8"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="relative inline-block">
-            <motion.h1
-              className="flex flex-col items-center justify-center gap-2 sm:gap-4 font-extrabold text-3xl sm:text-5xl lg:text-7xl tracking-tighter"
-              style={{
-                background: `linear-gradient(135deg, ${colors.brightBlue}, ${colors.blueGreen}, ${colors.dustyWhite}, ${colors.pinkSand})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              <span className="text-balance p-4">Find Your Dream Job</span>
-              <span className="flex items-center gap-2 sm:gap-4 flex-wrap justify-center">
-                and get Hired
-               
-              </span>
-            </motion.h1>
-            <motion.div
-              className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 text-[#51e2f5]"
-              animate={{
-                rotate: 360,
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                rotate: { duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
-                scale: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
-              }}
-            >
-              <Sparkles className="w-6 h-6 sm:w-8 sm:h-8" />
-            </motion.div>
-          </div>
-          <motion.p
-            className="text-gray-300 text-sm sm:text-lg lg:text-xl max-w-2xl mx-auto"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+        {/* Display Title: 28px/700 or larger on desktop */}
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[var(--color-text)] leading-[1.2]">
+          Discover your next opportunity.{" "}
+          <span className="text-[var(--color-primary)]">Built for tech talent.</span>
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-[var(--color-text-muted)] text-[15px] sm:text-[17px] max-w-2xl mx-auto leading-relaxed">
+          Search verified engineering roles, evaluate AI profile fit scores, and apply seamlessly with transparent tracking.
+        </p>
+
+        {/* Search Bar: Pill shaped, light gray background */}
+        <div className="pt-2 max-w-xl mx-auto">
+          <form
+            onSubmit={handleHeroSearch}
+            className="flex flex-col sm:flex-row items-center gap-2 p-1.5 rounded-[var(--radius-pill)] bg-[var(--color-surface-alt)] border border-[var(--color-border)] focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary-soft)] transition-all"
           >
-            Explore thousands of job listings or find the perfect candidate
-          </motion.p>
-        </motion.section>
+            <div className="relative flex-1 w-full">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-subtle)] pointer-events-none" />
+              <input
+                type="text"
+                value={heroSearch}
+                onChange={(e) => setHeroSearch(e.target.value)}
+                placeholder="Search job title, skills, or company"
+                className="w-full pl-10 pr-3 py-2 text-[14px] bg-transparent outline-none text-[var(--color-text)] placeholder:text-[var(--color-text-subtle)]"
+              />
+            </div>
+            <Button
+              type="submit"
+              size="default"
+              className="w-full sm:w-auto h-9 px-6 rounded-[var(--radius-pill)]"
+            >
+              Search
+            </Button>
+          </form>
 
-        {/* CTA Buttons */}
-        <motion.div
-          className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center"
-          variants={fadeInUp}
-          initial="initial"
-          animate="animate"
-        >
-          <Link to="/jobs" className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto bg-[#97f3ff] hover:bg-[#51e2f5]/90 text-black font-semibold px-6 sm:px-8 py-6 text-base sm:text-lg group">
-              Find Jobs
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          {/* Quick Filter Tags */}
+          <div className="flex items-center justify-center gap-2 mt-3 flex-wrap text-[12px] text-[var(--color-text-subtle)]">
+            <span>Trending:</span>
+            {["React Developer", "Full-Stack", "Frontend Lead", "Remote India"].map((kw) => (
+              <button
+                key={kw}
+                onClick={() => navigate(`/jobs?search=${encodeURIComponent(kw)}`)}
+                className="px-2.5 py-0.5 rounded-[var(--radius-pill)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] text-[var(--color-text-muted)] transition-colors"
+              >
+                {kw}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Action Row */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-2">
+          <Link to="/jobs">
+            <Button size="lg" className="h-10 px-6 gap-2">
+              <Briefcase className="w-4 h-4" />
+              Browse Open Jobs
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
-          <Link to="/post-job" className="w-full sm:w-auto">
-            <Button className="w-full sm:w-auto bg-red-800 hover:bg-red-950 text-black font-semibold px-6 sm:px-8 py-6 text-base sm:text-lg group">
-              Post a Job
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <Link to="/post-job">
+            <Button size="lg" variant="secondary" className="h-10 px-6 gap-2">
+              <Building2 className="w-4 h-4" />
+              Post a Role
             </Button>
           </Link>
-        </motion.div>
+        </div>
+      </section>
 
-        {/* Companies Carousel */}
-        <div className="relative -mx-4 sm:mx-0">
+      {/* Companies Logos */}
+      <section className="space-y-3">
+        <p className="text-center text-[12px] font-medium text-[var(--color-text-subtle)] uppercase tracking-wider">
+          Connecting talent with teams at
+        </p>
+
+        <div className="relative overflow-hidden py-1">
           <Carousel
             plugins={[
               Autoplay({
-                delay: 2000,
+                delay: 2400,
               }),
             ]}
-            className="w-full py-6 sm:py-10"
+            className="w-full"
           >
-            <CarouselContent className="-ml-2 sm:-ml-4">
+            <CarouselContent className="-ml-3">
               {companies.map((company) => (
-                <CarouselItem key={company.id} className="pl-2 sm:pl-4 basis-1/3 sm:basis-1/4 lg:basis-1/6">
-                  <motion.div className="relative group" whileHover={{ scale: 1.05 }}>
+                <CarouselItem key={company.id} className="pl-3 basis-1/3 sm:basis-1/4 lg:basis-1/6">
+                  <div className="p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-center h-14 shadow-card hover:border-[var(--color-primary)] transition-colors">
                     <img
                       src={company.path || "/placeholder.svg"}
                       alt={company.name}
-                      className="h-8 sm:h-12 lg:h-14 w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300"
+                      className={`h-7 w-auto max-w-full object-contain filter grayscale opacity-75 hover:opacity-100 transition-opacity ${
+                        company.name === "uber" ? "dark:invert" : ""
+                      }`}
                     />
-                  </motion.div>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
           </Carousel>
-          <div className="absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-gray-900 to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-gray-900 to-transparent" />
+        </div>
+      </section>
+
+      {/* 3 Pillar Cards: White cards, 1px border, shadow-card */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card space-y-2.5">
+          <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)] text-[var(--color-primary)] flex items-center justify-center">
+            <Zap className="w-5 h-5" />
+          </div>
+          <h3 className="text-[16px] font-semibold text-[var(--color-text)]">1-Click Easy Apply</h3>
+          <p className="text-[13px] text-[var(--color-text-muted)] leading-relaxed">
+            Apply to open roles directly with your saved resume. No tedious multi-step application forms.
+          </p>
         </div>
 
-        {/* Banner Image */}
-        <motion.div
-          className="rounded-lg sm:rounded-xl overflow-hidden shadow-2xl"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-        >
-          <img src="/Banner1.jpg" alt="Banner" className="w-full h-full object-cover" />
-        </motion.div>
+        <div className="p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card space-y-2.5">
+          <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)] text-[var(--color-primary)] flex items-center justify-center">
+            <Bot className="w-5 h-5" />
+          </div>
+          <h3 className="text-[16px] font-semibold text-[var(--color-text)]">AI Fit & Tailored Pitches</h3>
+          <p className="text-[13px] text-[var(--color-text-muted)] leading-relaxed">
+            Get an instant match score, skill recommendations, and generated cover letters powered by Gemini 3.5.
+          </p>
+        </div>
 
-        {/* Feature Cards */}
-        <motion.section
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6"
-          variants={fadeInUp}
-          initial="initial"
-          animate="animate"
-        >
-          <Card className="bg-gray-800/50 backdrop-blur border-[#51e2f5]/20 hover:border-[#51e2f5]/40 transition-all duration-300 hover:transform hover:-translate-y-1">
-            <CardHeader>
-              <CardTitle className="font-bold text-[#51e2f5] text-xl sm:text-2xl">For Job Seekers</CardTitle>
-            </CardHeader>
-            <CardContent className="text-gray-300 text-sm sm:text-base">
-              Search and apply for jobs, track applications, and more.
-            </CardContent>
-          </Card>
-          <Card className="bg-gray-800/50 backdrop-blur border-[#ffa8b6]/20 hover:border-[#ffa8b6]/40 transition-all duration-300 hover:transform hover:-translate-y-1">
-            <CardHeader>
-              <CardTitle className="font-bold text-[#ffa8b6] text-xl sm:text-2xl">For Employers</CardTitle>
-            </CardHeader>
-            <CardContent className="text-gray-300 text-sm sm:text-base">
-              Post jobs, manage applications, and find the best candidates.
-            </CardContent>
-          </Card>
-        </motion.section>
+        <div className="p-5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card space-y-2.5">
+          <div className="w-10 h-10 rounded-[var(--radius-sm)] bg-[var(--color-primary-soft)] text-[var(--color-accent)] flex items-center justify-center">
+            <BarChart3 className="w-5 h-5" />
+          </div>
+          <h3 className="text-[16px] font-semibold text-[var(--color-text)]">Transparent Status Tracker</h3>
+          <p className="text-[13px] text-[var(--color-text-muted)] leading-relaxed">
+            Know in real-time whether your application is Submitted, In Review, or progressing to Interview.
+          </p>
+        </div>
+      </section>
 
-        {/* FAQ Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="space-y-6"
-        >
-          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-100 mb-8">Frequently Asked Questions</h2>
-          <Accordion type="multiple" className="w-full space-y-4">
-            {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index + 1}`}
-                className="border border-gray-700/50 rounded-lg backdrop-blur bg-gray-800/30 data-[state=open]:bg-gray-800/50 transition-colors duration-200"
-              >
-                <AccordionTrigger className="text-gray-200 hover:text-[#51e2f5] px-4 py-6 text-left text-sm sm:text-base">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-gray-300 px-4 pb-6 text-sm sm:text-base">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </motion.div>
-      </main>
+      {/* Dual Audience Section */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card space-y-3.5">
+          <span className="px-2.5 py-0.5 rounded-[var(--radius-pill)] text-[12px] font-semibold bg-[var(--color-primary-soft)] text-[var(--color-primary)]">
+            For Candidates
+          </span>
+          <h2 className="text-[20px] font-bold text-[var(--color-text)]">
+            Find your next high-impact engineering role
+          </h2>
+          <p className="text-[13px] text-[var(--color-text-muted)] leading-relaxed">
+            Filter curated tech positions, run AI fit assessments on your resume, and communicate with verified recruiters.
+          </p>
+          <div className="pt-1">
+            <Link to="/jobs">
+              <Button size="sm" className="gap-1.5 font-semibold">
+                Explore Jobs
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        <div className="p-6 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface)] shadow-card space-y-3.5">
+          <span className="px-2.5 py-0.5 rounded-[var(--radius-pill)] text-[12px] font-semibold bg-[var(--color-primary-soft)] text-[var(--color-accent)]">
+            For Recruiters & Founders
+          </span>
+          <h2 className="text-[20px] font-bold text-[var(--color-text)]">
+            Hire qualified technical talent faster
+          </h2>
+          <p className="text-[13px] text-[var(--color-text-muted)] leading-relaxed">
+            Post opportunities with Markdown job requirements, review applicant resumes in 1-click, and manage candidates smoothly.
+          </p>
+          <div className="pt-1">
+            <Link to="/post-job">
+              <Button size="sm" variant="secondary" className="gap-1.5 font-semibold">
+                Post an Opening
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section: Full-width card matching other sections */}
+      <section className="w-full bg-[var(--color-surface)] p-6 sm:p-8 rounded-[var(--radius-md)] border border-[var(--color-border)] shadow-card space-y-5">
+        <div className="space-y-1">
+          <h2 className="text-[20px] font-bold text-[var(--color-text)]">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-[13px] text-[var(--color-text-muted)]">
+            Answers to common questions about TalentForge Pro
+          </p>
+        </div>
+
+        <Accordion type="single" collapsible className="w-full space-y-2.5">
+          {faqs.map((faq, index) => (
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className="border border-[var(--color-border)] rounded-[var(--radius-md)] bg-[var(--color-surface-alt)] px-4 sm:px-5 transition-colors"
+            >
+              <AccordionTrigger className="text-left font-semibold text-[14px] sm:text-[15px] hover:text-[var(--color-primary)] py-3.5">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="text-[13px] sm:text-[14px] text-[var(--color-text-muted)] leading-relaxed pb-3.5">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </section>
     </div>
-  )
-}
+  );
+};
 
-export default LandingPage
+export default LandingPage;

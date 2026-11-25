@@ -1,9 +1,10 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Analytics } from "@vercel/analytics/react"; // Import Vercel Analytics
+import { Analytics } from "@vercel/analytics/react";
 
 import AppLayout from "./layouts/app-layout";
 import ProtectedRoute from "./components/protected-route";
 import { ThemeProvider } from "./components/theme-provider";
+import RouteErrorFallback from "./components/error-boundary";
 
 import LandingPage from "./pages/landing";
 import Onboarding from "./pages/onboarding";
@@ -12,12 +13,14 @@ import JobListing from "./pages/jobListing";
 import MyJobs from "./pages/my-jobs";
 import SavedJobs from "./pages/saved-jobs";
 import JobPage from "./pages/job";
+import ChatBot from "./pages/ChatBot";
 
 import "./App.css";
 
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
+    errorElement: <RouteErrorFallback />,
     children: [
       { path: "/", element: <LandingPage /> },
       {
@@ -41,6 +44,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <PostJob />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/Chat-bot",
+        element: (
+          <ProtectedRoute>
+            <ChatBot />
           </ProtectedRoute>
         ),
       },
@@ -74,9 +85,9 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="tf-ui-theme">
       <RouterProvider router={router} />
-      <Analytics /> {/* Add Analytics component here */}
+      <Analytics />
     </ThemeProvider>
   );
 }

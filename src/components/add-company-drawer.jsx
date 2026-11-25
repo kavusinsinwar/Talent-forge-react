@@ -88,10 +88,9 @@ const AddCompanyDrawer = ({ fetchCompanies }) => {
           <Button
             type="button"
             onClick={handleSubmit(onSubmit)}
-            variant="destructive"
-            className="w-40"
+            className="w-36 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white"
           >
-            Add
+            Add Company
           </Button>
         </form>
         <DrawerFooter>
