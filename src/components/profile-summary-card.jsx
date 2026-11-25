@@ -48,6 +48,25 @@ export function ProfileSummaryCard({ appliedCount = 0, savedCount = 0 }) {
             ? "Talent Acquisition & Hiring Lead"
             : (user?.unsafeMetadata?.headline || "Software Engineer & Builder")}
         </p>
+
+        {/* Skills Chips */}
+        {user?.unsafeMetadata?.skills && (
+          <div className="flex flex-wrap gap-1 justify-center mt-2">
+            {user.unsafeMetadata.skills
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+              .slice(0, 3)
+              .map((skill) => (
+                <span
+                  key={skill}
+                  className="px-2 py-0.5 rounded-[var(--radius-pill)] text-[10px] font-medium bg-[var(--color-primary-soft)] text-[var(--color-primary)]"
+                >
+                  {skill}
+                </span>
+              ))}
+          </div>
+        )}
       </div>
 
       <div className="border-t border-[var(--color-border)]" />
